@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "repo-conn"
+version = "1.1.0"
+description = "Analyze GitHub repositories, expose endpoints, visualize module interconnections, and generate AI-powered architecture reports via LM Studio"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["github", "repository", "analysis", "llm", "pipeline", "react-flow"]
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "python-multipart>=0.0.9",
+    "python-dotenv>=1.0.0",
+    "websockets>=12.0",
+    # tomllib is built-in for Python ≥ 3.11; backport required for 3.10
+    "tomli>=2.0.1; python_version < '3.11'",
+]
+
+[project.scripts]
+repo-conn = "backend.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27.0",
+    "ruff>=0.4.0",
+]
+
+[project.urls]
+Repository = "https://github.com/kurei/github-repository-interconnect"
+
+# ---------------------------------------------------------------------------
+# Hatchling build config
+# ---------------------------------------------------------------------------
+[tool.hatch.build.targets.wheel]
+# Include both the Python package and the pre-built React frontend
+packages = ["backend"]
+artifacts = ["frontend/dist"]
+
+[tool.hatch.build.targets.wheel.force-include]
+# Map the local frontend/dist into the wheel so it ends up at
+# <site-packages>/frontend/dist/ alongside the backend package
+"frontend/dist" = "frontend/dist"
+
+
